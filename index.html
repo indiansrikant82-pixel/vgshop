@@ -557,7 +557,9 @@ nav{position:sticky;top:0;z-index:60}
 .vwrap img{width:100%;max-height:190px;object-fit:cover;display:block;background:#000}
 .vwrap{position:relative}
 .playov{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;border:2px solid rgba(255,255,255,.7);background:rgba(0,0,0,.45);color:#fff;font-size:22px;cursor:pointer;backdrop-filter:blur(4px)}
-.playov:hover{box-shadow:0 0 24px rgba(255,255,255,.7)}
+.playov:hover{transform:translate(-50%,-50%)!important;box-shadow:0 0 24px rgba(255,255,255,.7)}
+.playov{transition:none!important}
+.playov::after{display:none!important}
 .thumbplay{position:relative;cursor:pointer;background:#000}
 .thumbplay img{width:100%;height:auto;max-height:260px;object-fit:contain;display:block;background:#000}
 .vwrap img{width:100%;height:auto;max-height:260px;object-fit:contain;display:block;background:#000}
