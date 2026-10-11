@@ -2146,6 +2146,7 @@ function googleNeedsRedirect(){
 function googleLogin(){
  if(!GOOGLE_ON){msgBox('Google login needs Firebase config (see top of file).\nTotally FREE — no card needed. Send me the config.');return;}
  window._vgGgl=Date.now();
+ try{const sp=firebase.auth().signOut();if(sp&&sp.catch)sp.catch(()=>{});}catch(e){}
  if(googleNeedsRedirect()){
   try{
    showToast('🔄 Taking you to the Google page...');
@@ -2191,6 +2192,11 @@ function googleRedirectBack(){
   try{mine=sessionStorage.getItem('vg_gret')==='1';sessionStorage.removeItem('vg_gret');}catch(e){}
   firebase.auth().getRedirectResult().then(res=>{
    if(res&&res.user&&res.user.email){window._vgGgl=0;finishGoogleLogin(String(res.user.email).toLowerCase().trim(),res.user.displayName);}
+   else if(mine){
+    let cu=null;try{cu=firebase.auth().currentUser;}catch(e){}
+    if(cu&&cu.email){window._vgGgl=0;finishGoogleLogin(String(cu.email).toLowerCase().trim(),cu.displayName);}
+    else{window._vgGgl=0;try{msgBox('Returned from Google but login was not confirmed. Please try again in normal Chrome (not in-app browser).');}catch(_){}}
+   }
   }).catch(e=>{window._vgGgl=0;if(mine){try{msgBox('Google login failed: '+((e&&e.message)||e));}catch(_){}}});
  }catch(e){}
 }
