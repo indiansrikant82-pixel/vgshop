@@ -2149,6 +2149,7 @@ function googleLogin(){
  if(googleNeedsRedirect()){
   try{
    showToast('🔄 Taking you to the Google page...');
+   try{sessionStorage.setItem('vg_gret','1');}catch(e){}
    firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
   }catch(e){window._vgGgl=0;msgBox('Google login failed: '+((e&&e.message)||e));}
   return;
@@ -2158,6 +2159,7 @@ function googleLogin(){
   if(done)return;done=true;window._vgGgl=0;
   try{
    showToast('🔄 Popup is stuck — taking you to the Google page...');
+   try{sessionStorage.setItem('vg_gret','1');}catch(e){}
    firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
   }catch(e){msgBox('Google login is stuck. Allow popups for this site and try again.');}
  },45000);
@@ -2170,6 +2172,7 @@ function googleLogin(){
   if(code==='auth/popup-blocked'||code==='auth/popup-closed-by-user'||code==='auth/cancelled-popup-request'){
    try{
     showToast('🔄 Popup blocked — taking you to the Google page...');
+    try{sessionStorage.setItem('vg_gret','1');}catch(e){}
     firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
     return;
    }catch(_){}
@@ -2184,9 +2187,11 @@ try{
 function googleRedirectBack(){
  try{
   if(!GOOGLE_ON||typeof firebase==='undefined'||!firebase.auth)return;
+  let mine=false;
+  try{mine=sessionStorage.getItem('vg_gret')==='1';sessionStorage.removeItem('vg_gret');}catch(e){}
   firebase.auth().getRedirectResult().then(res=>{
    if(res&&res.user&&res.user.email){window._vgGgl=0;finishGoogleLogin(String(res.user.email).toLowerCase().trim(),res.user.displayName);}
-  }).catch(()=>{});
+  }).catch(e=>{window._vgGgl=0;if(mine){try{msgBox('Google login failed: '+((e&&e.message)||e));}catch(_){}}});
  }catch(e){}
 }
 try{document.addEventListener('visibilitychange',()=>{try{if(!document.hidden&&window._vgGgl)googleRedirectBack();}catch(e){}});}catch(e){}
