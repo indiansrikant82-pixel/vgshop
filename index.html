@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="logo.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a0a0e">
 <title>VG CHEATS SHOP</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
@@ -203,7 +205,7 @@ body.enter .door-right{transform:translateX(100%) rotateY(-60deg)}
 .bigcol::-webkit-color-swatch{border:none;border-radius:10px}
 .bigcol::-moz-color-swatch{border:none;border-radius:10px}
 .hexcode{font-size:.75rem;color:#9ab;margin-left:6px}
-/* compact hue picker */
+/* compact color picker */
 .pickrow{display:flex;align-items:center;gap:10px;margin:8px 0}
 .seldot{width:38px;height:38px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 12px rgba(0,229,255,.5);flex-shrink:0;background:#00e5ff}
 .hueslider{flex:1;-webkit-appearance:none;appearance:none;height:14px;border-radius:10px;background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);outline:none;cursor:pointer}
@@ -304,9 +306,9 @@ nav.scrolled{box-shadow:0 6px 24px rgba(0,0,0,.45)}
 .bubbles span:nth-child(7){left:46%;width:34px;height:34px;animation-duration:10s;animation-delay:-4s}
 .bubbles span:nth-child(8){left:63%;width:20px;height:20px;animation-duration:8s;animation-delay:-7s}
 @keyframes rise{0%{transform:translateY(0) translateX(0) rotate(0)}25%{transform:translateY(-30vh) translateX(25px) rotate(40deg)}50%{transform:translateY(-60vh) translateX(-25px) rotate(80deg)}75%{transform:translateY(-90vh) translateX(20px) rotate(120deg)}100%{transform:translateY(-115vh) translateX(0) rotate(160deg);opacity:.2}}
-/* ===== FLOWING AURORA (behta hua reshmi flow) ===== */
+/* ===== FLOWING AURORA (silky flow) ===== */
 .flow{position:fixed;z-index:0;pointer-events:none;filter:blur(70px);opacity:.55;will-change:transform}
-/* GPU smoke puffs — compositor par chalte hain, main thread rukne par bhi nahi rukte */
+/* GPU smoke puffs — run on compositor, never block even if main thread stalls */
 .puff{position:absolute;bottom:-22vmax;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16),rgba(190,170,255,.08) 45%,transparent 70%);filter:blur(26px);will-change:transform;animation-name:puffUp;animation-timing-function:linear;animation-iteration-count:infinite}
 @keyframes puffUp{0%{transform:translate3d(0,0,0) scale(.8)}25%{transform:translate3d(6vw,-32vh,0) scale(1.02)}50%{transform:translate3d(-5vw,-62vh,0) scale(1.15)}75%{transform:translate3d(4vw,-92vh,0) scale(1.05)}100%{transform:translate3d(-3vw,-128vh,0) scale(1.2)}}
 /* thin smoke wisps like the video */
@@ -622,7 +624,7 @@ body.no-fx #waFloat{animation:none!important}
 body.no-fx .reveal{opacity:1!important;transform:none!important}
 body.no-fx{scroll-behavior:auto!important}
 body.no-fx .vwrap video{preload:none}
-/* PC: thoda halka — kam blur, kam glow, kam shadow */
+/* PC: lighter — less blur, less glow, less shadow */
 .card,.login-card,nav,#contact,.stat,.sbox,.fpanel{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .orb{opacity:.42;filter:blur(50px)}
 .flow{filter:blur(50px);opacity:.35}
@@ -699,7 +701,7 @@ nav button:hover{box-shadow:0 0 15px #00e5ff;transform:translateY(-2px)}
 .login-card.gold #roleHint{color:#8b8b9e}
 .login-card.gold .lbrand{margin-bottom:2px}
 .devrow{text-align:center;margin-top:10px}
-/* ===== GOLD SITE THEME (login jaisa — sirf rang, layout/content same) ===== */
+/* ===== GOLD SITE THEME (like login — colors only, layout/content same) ===== */
 :root{--acc:#f5c518}
 nav{border-bottom:1px solid rgba(245,197,24,.35)}
 nav button:hover{box-shadow:0 0 15px rgba(245,197,24,.7);transform:translateY(-2px)}
@@ -821,6 +823,7 @@ nav button{border-radius:0!important}
         <button class="gbtn" onclick="remSave();doLogin()">Sign In &nbsp;→</button>
         <div class="gdiv">OR CONTINUE WITH</div>
         <div class="btn-row"><button class="gsoc" onclick="googleLogin()">G&nbsp; Google</button></div>
+        <div class="btn-row" id="appBtnRow" style="display:none;margin-top:10px"><button class="gsoc" id="appBtn" onclick="appDownload()">📥 Download App</button></div>
         <p class="gswap">Don't have an account? <button class="regbtn" onclick="toggleReg()">Sign Up</button></p>
         <div class="devrow"><button class="flink" onclick="openDev()">👨‍💻 Developer</button></div>
       </div>
@@ -1071,6 +1074,7 @@ nav button{border-radius:0!important}
   <label>Main Telegram link</label><input id="st_tg" placeholder="https://t.me/...">
   <label>Owner UPI ID (for payment QR, e.g. name@upi)</label><input id="st_upi" placeholder="yourname@upi">
   <label>Razorpay Key ID (for auto payment verify — auto-pay needs this)</label><input id="st_rzp" placeholder="rzp_live_...">
+  <label>APK download link (direct .apk URL — empty hides download button)</label><input id="st_apk" placeholder="https://.../app.apk">
   <label style="display:flex;align-items:center;gap:8px"><input id="st_instant" type="checkbox" checked style="width:auto"> Instant delivery ON (OFF = Owner approval must, max security)</label>
   <label class="mswitch"><input type="checkbox" id="st_maint"> 🛠 Full-shop maintenance (all panels closed)</label>
   <input id="st_maintmsg" placeholder="Shop maintenance text (e.g. UPDATE COMING SOON)">
@@ -1274,8 +1278,8 @@ function vgApplyFx(){
 }
 try{if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',vgApplyFx);else vgApplyFx();}catch(e){}
 try{addEventListener('resize',function(){clearTimeout(window._vgFxT);window._vgFxT=setTimeout(vgApplyFx,250);});}catch(e){}
-/* Razorpay Key ID Owner Site Settings me dalega (Settings → Razorpay Key ID).
-   Bina key ke payment nahi chalega — koi bina pay kiye access nahi payega. */
+/* Razorpay Key ID Owner puts in Site Settings (Settings → Razorpay Key ID).
+   Without key no payment will run — nobody gets access without paying. */
 /* ===== GMAIL OTP (FREE — 200 free emails/month) =====
    1. emailjs.com → create free account (no card needed)
    2. Email Services → connect Gmail → you get SERVICE ID
@@ -1369,7 +1373,7 @@ function getDev(p){return String(getInfo(p.id).device||p.device||'ANDROID').toUp
 /* ===== MAINTENANCE MODE (owner on/off + custom text) ===== */
 function isMaint(p){try{return !!getInfo(p.id).maint;}catch(e){return false;}}
 function getMaintMsg(p){try{const m=getInfo(p.id).maintMsg;return (m&&String(m).trim())||'TEMPORARILY UNAVAILABLE';}catch(e){return 'TEMPORARILY UNAVAILABLE';}}
-/* tick/text badalte hi turant save — redraw ya Save ka wait nahi */
+/* tick/text save instantly — no wait for redraw or Save */
 function writeMaint(maint,msg){
  try{
   let all={};try{all=storeObj('vg_panelinfo');}catch(e){}
@@ -1391,7 +1395,7 @@ function setMaintMsg(el){
  if(!canEdit())return;
  writeMaint(undefined,el.value);renderProducts();
 }
-/* har field badalte hi turant save (CLOSE dabane par bhi rahega) */
+/* every field saves instantly on change (stays even if CLOSE pressed) */
 function updInfoPatch(patch){
  try{
   if(!canEdit())return;
@@ -1431,7 +1435,7 @@ function saveInfo(pid,name,desc,by,features,pfile,device,maint,maintMsg,apiProv,
  all[pid]={name:name,desc:desc,by:by||'',features:features||[],pfile:pfile||'',device:device||'',maint:!!maint,maintMsg:maintMsg||'',apiProv:apiProv||'',apiKey:apiKey||'',apiApp:apiApp||'',apiUrl:apiUrl||'',claimUrl:claimUrl||''};localStorage.setItem('vg_panelinfo',JSON.stringify(all));
  cloudSet('vg_panelinfo');
 }
-/* ===== PER-PANEL API (KeyAuth / AuthLX / GenzAuth / Custom — khaali = global) ===== */
+/* ===== PER-PANEL API (KeyAuth / AuthLX / GenzAuth / Custom — empty = global) ===== */
 function getApi(p){
  try{
   const inf=getInfo(p.id);
@@ -1455,7 +1459,7 @@ function loadUsers(){
   const raw=localStorage.getItem('vg_users');
   const a=JSON.parse(raw||'[]');
   if(Array.isArray(a)&&a.length)return a;
-  // khaali/mita hua mile + backup me zyada users hon = bahari gadbad → backup se wapas
+  // empty/wiped + backup has more users = outside interference → restore from backup
   try{
    const b=JSON.parse(localStorage.getItem('vg_users_bak')||'[]');
    if(Array.isArray(b)&&b.length>(Array.isArray(a)?a.length:0)){
@@ -1468,8 +1472,8 @@ function loadUsers(){
  }catch(e){return[];}
 }
 function saveUsers(a){localStorage.setItem('vg_users',JSON.stringify(a));try{localStorage.setItem('vg_users_bak',JSON.stringify(a));}catch(e){}cloudSet('vg_users');}
-/* default demo accounts (pehli baar auto-bante hain, Owner baad me delete kar sakta hai) */
-/* NOTE: seed direct likho — cloudSet MAT karo, nahi to khaali browser server ka asli data mita dega */
+/* default demo accounts (auto-created first time, Owner can delete later) */
+/* NOTE: write seed directly — do NOT cloudSet, else an empty browser wipes the server's real data */
 try{
  if(localStorage.getItem('vg_users')===null){
   localStorage.setItem('vg_users',JSON.stringify([
@@ -1498,7 +1502,7 @@ function allPanels(){
  }catch(e){}
  return base;
 }
-/* same naam ke judvaan panel pakdo (double-save se bante hain) */
+/* catch same-name twin panels (created by double-save) */
 function twinNames(){
  try{
   const m={};
@@ -1514,7 +1518,7 @@ function twinWarn(pid){
   return '';
  }catch(e){return '';}
 }
-/* save ke baad card par sach me dikha ya nahi — DOM verify */
+/* verify after save whether it really shows on card — DOM verify */
 function verifyCardDom(pid,c){
  try{
   let found=null;
@@ -1532,7 +1536,7 @@ function verifyCardDom(pid,c){
   return '';
  }catch(e){return 'Card check error: '+(((e&&e.message)||e));}
 }
-/* modal ke andar sach — last save/open state yahi dikhega */
+/* truth inside modal — last save/open state shows here */
 function saveLine(t){
  try{const n=document.getElementById('saveLine');if(n)n.innerText=t;}catch(e){}
 }
@@ -1573,7 +1577,7 @@ function dropCard(e,tpid){
  }catch(err){}
 }
 function findPanel(pid){return allPanels().find(x=>String(x.id)===String(pid));}
-/* link normalizer: Drive/Discord/Dropbox sab chalenge */
+/* link normalizer: Drive/Discord/Dropbox all work */
 function fixMedia(u){
  u=String(u||'').trim();if(!u)return '';
  let m=u.match(/drive\.google\.com\/file\/d\/([^\/?#]+)/);
@@ -1599,8 +1603,8 @@ function playYt(btn){
   box.innerHTML='<iframe src="https://www.youtube.com/embed/'+box.dataset.yt+'?autoplay=1&rel=0" frameborder="0" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen style="width:100%;height:190px;display:block;background:#000"></iframe>';
  }catch(e){}
 }
-/* card mp4: pehle thumbnail, click par video load+play (fast + no lag) */
-/* dead/expired media link: card khaali na ho — owner ko warning, buyer ko placeholder */
+/* card mp4: thumbnail first, video loads+plays on click (fast + no lag) */
+/* dead/expired media link: card never goes empty — owner warning, buyer placeholder */
 function vgMediaFail(el){
  try{
   const tp=el.closest?el.closest('.thumbplay'):null;
@@ -1734,9 +1738,9 @@ document.getElementById('cfBg').onclick=()=>cfDone(null);
 /* ===== STORAGE GUARD (save fail hote hi wajah batayega) ===== */
 (function(){try{const _s=localStorage.setItem.bind(localStorage);localStorage.setItem=function(k,v){try{_s(k,v);}catch(e){setTimeout(()=>{try{msgBox('Storage blocked! Turn ON browser site-data or free space — nothing was saved.');}catch(_){}},0);throw e;}};}catch(e){}})();
 function storageOK(){try{localStorage.setItem('vg_t','1');localStorage.removeItem('vg_t');return true;}catch(e){return false;}}
-/* ===== CLOUD SYNC (free Firebase — sab devices par same data) =====
-   Firebase config lagate hi Owner ka approve turant buyer ko dikhega.
-   Database → Realtime Database → Create → Rules me read/write true karo. */
+/* ===== CLOUD SYNC (free Firebase — same data on all devices) =====
+   As soon as Firebase config is added, Owner approval instantly shows to the buyer.
+   Database → Realtime Database → Create → set Rules read/write true. */
 let DB=null;
 window._cloudState='off';
 window._cloudErr='';
@@ -1774,7 +1778,7 @@ function cloudInit(){
       const nv=(typeof v==='string')?v:JSON.stringify(v);
       const cur=localStorage.getItem(k);
       if(cur===nv){try{localStorage.removeItem('vg_push_'+k);}catch(e){}try{if(window._vgLastW)delete window._vgLastW[k];}catch(e){}return;}
-      // khaali server-list kabhi bhari local users-list ko na mite (seed-wipe guard)
+      // empty server-list must never wipe a full local users-list (seed-wipe guard)
       try{
        if(k==='vg_users'){
         let loc=[];try{loc=JSON.parse(cur||'[]');}catch(e){loc=[];}
@@ -1826,7 +1830,7 @@ function cloudSet(k){
   });
  }catch(e){}
 }
-/* seller secrets kabhi cloud par nahi — sirf owner browser me */
+/* seller secrets never go to cloud — owner browser only */
 function stripSecrets(k,v){
  try{
   if(k==='vg_site'&&v&&typeof v==='object'){const c=Object.assign({},v);delete c.kaseller;return c;}
@@ -1881,7 +1885,7 @@ function cloudRefresh(k){
   else if(k==='vg_freeclaim'){try{if(document.getElementById('rateModal').classList.contains('open')){window._vgRemoteDraw=true;drawRates();}}catch(e){}try{document.querySelectorAll('.inlineRates').forEach(b=>{if(b.style.display!=='none'&&b.id.indexOf('ir_')===0)rebuildInline(b.id.slice(3));});}catch(e){}}
  }catch(e){}
 }
-/* ===== PERSONAL THEME (har koi apne rang) ===== */
+/* ===== PERSONAL THEME (everyone their own colors) ===== */
 function myTheme(){try{const t=JSON.parse(localStorage.getItem('vg_mytheme')||'null');if(t&&(t.acc||t.head))return t;}catch(e){}return null;}
 function applyTheme(){
  const t=myTheme();if(!t)return;
@@ -1951,7 +1955,7 @@ function clearSession(){try{localStorage.removeItem('vg_session');sessionStorage
   }else if(s){localStorage.removeItem('vg_session');}
  }catch(e){}
 })();
-/* ===== BULLETPROOF LINK OPENER (har button ke liye) ===== */
+/* ===== BULLETPROOF LINK OPENER (for every button) ===== */
 function openLink(url){
  if(!url)return false;
  try{
@@ -2053,6 +2057,24 @@ function doRegisterGold(){
  }catch(e){}
 }
 function appleLogin(){showToast('🍎 Apple login coming soon — login with Google/ID for now');}
+let _vgDeferred=null;
+try{window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();window._vgDeferred=e;try{paintAppBtn();}catch(_){}});}catch(e){}
+function appApk(){try{return getSite().apk||'';}catch(e){return '';}}
+function paintAppBtn(){
+ try{
+  const row=document.getElementById('appBtnRow'),btn=document.getElementById('appBtn');if(!row||!btn)return;
+  if(window._vgDeferred){row.style.display='';btn.innerHTML='📲 Install App';}
+  else if(appApk()){row.style.display='';btn.innerHTML='📥 Download APK';}
+  else row.style.display='none';
+ }catch(e){}
+}
+function appDownload(){
+ vgClick();
+ try{if(window._vgDeferred){const p=window._vgDeferred;window._vgDeferred=null;try{paintAppBtn();}catch(_){}p.prompt();return;}}catch(e){}
+ const apk=appApk();
+ if(apk)openLink(apk,'_blank');
+ else showToast('APK link coming soon');
+}
 document.getElementById('loginSec').addEventListener('click',e=>{
  const b=document.getElementById('regBox');
  if(b&&b.style.display!=='none'&&!e.target.closest('.login-card'))b.style.display='none';
@@ -2100,7 +2122,7 @@ async function doLogin(){
   }else{localStorage.removeItem('vg_remember');}
  }catch(e){}
  const card=document.getElementById('loginCard');
- card.classList.add('spinning'); // ghumta hua effect
+ card.classList.add('spinning'); // spinning effect
  setTimeout(enterShop,1200);
 }
 /* ===== GOOGLE LOGIN (free) ===== */
@@ -2143,8 +2165,16 @@ function googleNeedsRedirect(){
  }catch(e){}
  return false;
 }
+function googleErrMsg(e){
+ const m=String((e&&e.message)||e||'');
+ const c=String((e&&e.code)||'');
+ if(/network-request-failed|networkerror|failed to fetch|blocked_by_client|ERR_BLOCKED|ERR_INTERNET_DISCONNECTED|load failed/i.test(m+' '+c))
+  return 'Network blocked: pause your adblocker/VPN for this site, check internet, then retry.';
+ return null;
+}
 function googleLogin(){
  if(!GOOGLE_ON){msgBox('Google login needs Firebase config (see top of file).\nTotally FREE — no card needed. Send me the config.');return;}
+ if(typeof firebase==='undefined'||!firebase.auth){msgBox('Google login is blocked: an adblocker/extension is stopping it. Pause adblocker for this site, then try again.');return;}
  window._vgGgl=Date.now();
  try{const sp=firebase.auth().signOut();if(sp&&sp.catch)sp.catch(()=>{});}catch(e){}
  if(googleNeedsRedirect()){
@@ -2169,6 +2199,7 @@ function googleLogin(){
   finishGoogleLogin(((res.user&&res.user.email)||'').toLowerCase().trim(),res.user&&res.user.displayName);
  }).catch(e=>{
   if(done)return;done=true;clearTimeout(to);window._vgGgl=0;
+  const gm=googleErrMsg(e);if(gm){msgBox(gm);return;}
   const code=(e&&e.code)||'';
   if(code==='auth/popup-blocked'||code==='auth/popup-closed-by-user'||code==='auth/cancelled-popup-request'){
    try{
@@ -2197,7 +2228,7 @@ function googleRedirectBack(){
     if(cu&&cu.email){window._vgGgl=0;finishGoogleLogin(String(cu.email).toLowerCase().trim(),cu.displayName);}
     else{window._vgGgl=0;try{msgBox('Returned from Google but login was not confirmed. Please try again in normal Chrome (not in-app browser).');}catch(_){}}
    }
-  }).catch(e=>{window._vgGgl=0;if(mine){try{msgBox('Google login failed: '+((e&&e.message)||e));}catch(_){}}});
+  }).catch(e=>{window._vgGgl=0;if(mine){const gm=googleErrMsg(e);try{msgBox(gm||('Google login failed: '+((e&&e.message)||e)));}catch(_){}}});
  }catch(e){}
 }
 try{document.addEventListener('visibilitychange',()=>{try{if(!document.hidden&&window._vgGgl)googleRedirectBack();}catch(e){}});}catch(e){}
@@ -2288,7 +2319,7 @@ function sendOtp(){
   }).catch(e=>{db.innerHTML='❌ Email fail: '+(e&&e.text?e.text:'check key/service');});
   return;
  }
- // ==== DEMO (EmailJS setup nahi hua) ====
+ // ==== DEMO (EmailJS not set up) ====
  db.style.display='block';
  db.innerHTML='📩 Demo OTP: <span style="font-size:1.4rem">'+demoOtp+'</span><br><small style="color:#9ab">(For Gmail OTP, setup EmailJS — see top of file, FREE)</small>';
  showToast('📩 OTP sent');
@@ -2356,7 +2387,7 @@ function renderProducts(){
  observeReveals();
  vgPauseOffscreen();
 }
-/* phone: jo video screen par nahi, use pause rakho (1 se zyada decoder = lag) */
+/* phone: pause offscreen video (more than 1 decoder = lag) */
 let _vgVidObs=null;
 function vgPauseOffscreen(){
  try{
@@ -2423,8 +2454,8 @@ function closeRates(){
 }
 function drawRates(){
  const p=findPanel(ratePid);if(!p)return;
- // beech me redraw aaye (cloud/keys) to type kiya hua mitna nahi chahiye — stash karo
- // (modal band ho to stash mat karo taaki purana type hua wapas na dikhe)
+ // redraw in between (cloud/keys) must not wipe typed text — stash it
+ // (no stash when modal closed, so old typed text never reappears)
  let _stash=null;
  try{
   if(!window._vgRemoteDraw&&document.getElementById('rateModal').classList.contains('open')){
@@ -2510,7 +2541,7 @@ function addRateRow(){
  if(c)saveInfo(ratePid,c.name,c.desc,c.by,c.features,c.pfile,c.device,c.maint,c.maintMsg,c.apiProv,c.apiKey,c.apiApp,c.apiUrl,c.claimUrl);
  drawRates();renderProducts();
 }
-/* plan delete par uski keys bhi shift karo taaki galat plan par na lage */
+/* when a plan is deleted, shift its keys too so they don't attach to the wrong plan */
 function shiftPools(pid,delIdx){
  try{
   const all=JSON.parse(localStorage.getItem('vg_keypool')||'{}');
@@ -2902,7 +2933,7 @@ function savePool(pid,idx,pool){
  try{localStorage.setItem('vg_keypool',JSON.stringify(all));}catch(e){}
  cloudSet('vg_keypool');
 }
-/* ek baar purani duplicate keys saaf karo */
+/* clean old duplicate keys once */
 try{
  const raw=localStorage.getItem('vg_keypool');
  if(raw){const all=JSON.parse(raw);let ch=false;
@@ -3579,7 +3610,7 @@ function paintGlobalMaint(){
   }else b.style.display='none';
  }catch(e){}
 }
-const DEFAULT_SITE={name:'VG CHEATS',logo:'logo.png',help_yt:'',help_btn:'How to Buy or How to use',greet:'Welcome to',wb:'Welcome Back',sub:'Best quality panels — instant delivery, best price',phone:'contact :- 8521189842',email:'indiansrikant82@gmail.com & a1gamingyt82@gmail.com',wa:'918521189842',wch:'https://whatsapp.com/channel/0029Vb8Qx2IFnSz40l4Yv41w',tg:'https://t.me/+tSngo3Aaar81NDll',upi:'',rzp:'',instant:true,kaseller:'',dev_name:'VG Team',dev_contact:'Contact Owner',dev_about:'Official developer',acc:'#00e5ff',head:'#ffffff',maint:false,maintMsg:'',bShopBg:'',bShopTx:'',bVidBg:'',bVidTx:'',bBuyBg:'',bBuyTx:'',bDcBg:'',bDcTx:''};
+const DEFAULT_SITE={name:'VG CHEATS',logo:'logo.png',help_yt:'',help_btn:'How to Buy or How to use',greet:'Welcome to',wb:'Welcome Back',sub:'Best quality panels — instant delivery, best price',phone:'contact :- 8521189842',email:'indiansrikant82@gmail.com & a1gamingyt82@gmail.com',wa:'918521189842',wch:'https://whatsapp.com/channel/0029Vb8Qx2IFnSz40l4Yv41w',tg:'https://t.me/+tSngo3Aaar81NDll',upi:'',rzp:'',apk:'',instant:true,kaseller:'',dev_name:'VG Team',dev_contact:'Contact Owner',dev_about:'Official developer',acc:'#00e5ff',head:'#ffffff',maint:false,maintMsg:'',bShopBg:'',bShopTx:'',bVidBg:'',bVidTx:'',bBuyBg:'',bBuyTx:'',bDcBg:'',bDcTx:''};
 function getSite(){
  try{
   const s=JSON.parse(localStorage.getItem('vg_site')||'null');
@@ -3611,6 +3642,7 @@ function renderSite(){
  try{applyTheme();}catch(e){}
  try{paintGlobalMaint();}catch(e){}
  try{paintBtnTheme();}catch(e){}
+ try{paintAppBtn();}catch(e){}
 }
 function openSite(){
  if(!isOwner())return;
@@ -3629,6 +3661,7 @@ function openSite(){
  document.getElementById('st_tg').value=s.tg;
  document.getElementById('st_upi').value=s.upi||'';
  document.getElementById('st_rzp').value=s.rzp||'';
+ try{document.getElementById('st_apk').value=s.apk||'';}catch(e){}
  try{document.getElementById('st_instant').checked=s.instant!==false;}catch(e){}
  try{document.getElementById('st_maint').checked=!!s.maint;}catch(e){}
  try{document.getElementById('st_maintmsg').value=s.maintMsg||'';}catch(e){}
@@ -3664,7 +3697,7 @@ function closeSite(){
 }
 function saveSite(quiet){
  const g=id=>document.getElementById(id).value.trim();
- const s={name:g('st_name')||DEFAULT_SITE.name,logo:g('st_logo'),help_yt:g('st_helpyt'),help_btn:g('st_helpbtn'),sub:g('st_sub')||DEFAULT_SITE.sub,phone:g('st_phone')||DEFAULT_SITE.phone,email:g('st_email')||DEFAULT_SITE.email,wa:g('st_wa').replace(/\D/g,'')||DEFAULT_SITE.wa,wch:g('st_wch')||DEFAULT_SITE.wch,tg:g('st_tg')||DEFAULT_SITE.tg,upi:g('st_upi'),rzp:g('st_rzp'),instant:document.getElementById('st_instant').checked,maint:document.getElementById('st_maint').checked,maintMsg:g('st_maintmsg'),kaseller:g('st_kaseller'),dev_name:g('st_devname')||DEFAULT_SITE.dev_name,dev_contact:g('st_devcontact')||DEFAULT_SITE.dev_contact,dev_about:g('st_devabout')||DEFAULT_SITE.dev_about,acc:g('st_acc')||'#00e5ff',head:g('st_head')||'#ffffff',greet:g('st_greet')||DEFAULT_SITE.greet,wb:g('st_wb')||DEFAULT_SITE.wb,bShopBg:g('st_bshopbg'),bShopTx:g('st_bshoptx'),bVidBg:g('st_bvidbg'),bVidTx:g('st_bvidtx'),bBuyBg:g('st_bbuybg'),bBuyTx:g('st_bbuytx'),bDcBg:g('st_bdcbg'),bDcTx:g('st_bdctx')};
+ const s={name:g('st_name')||DEFAULT_SITE.name,logo:g('st_logo'),help_yt:g('st_helpyt'),help_btn:g('st_helpbtn'),sub:g('st_sub')||DEFAULT_SITE.sub,phone:g('st_phone')||DEFAULT_SITE.phone,email:g('st_email')||DEFAULT_SITE.email,wa:g('st_wa').replace(/\D/g,'')||DEFAULT_SITE.wa,wch:g('st_wch')||DEFAULT_SITE.wch,tg:g('st_tg')||DEFAULT_SITE.tg,upi:g('st_upi'),rzp:g('st_rzp'),apk:g('st_apk'),instant:document.getElementById('st_instant').checked,maint:document.getElementById('st_maint').checked,maintMsg:g('st_maintmsg'),kaseller:g('st_kaseller'),dev_name:g('st_devname')||DEFAULT_SITE.dev_name,dev_contact:g('st_devcontact')||DEFAULT_SITE.dev_contact,dev_about:g('st_devabout')||DEFAULT_SITE.dev_about,acc:g('st_acc')||'#00e5ff',head:g('st_head')||'#ffffff',greet:g('st_greet')||DEFAULT_SITE.greet,wb:g('st_wb')||DEFAULT_SITE.wb,bShopBg:g('st_bshopbg'),bShopTx:g('st_bshoptx'),bVidBg:g('st_bvidbg'),bVidTx:g('st_bvidtx'),bBuyBg:g('st_bbuybg'),bBuyTx:g('st_bbuytx'),bDcBg:g('st_bdcbg'),bDcTx:g('st_bdctx')};
  localStorage.setItem('vg_site',JSON.stringify(s));
  cloudSet('vg_site');
  renderSite();
@@ -3848,7 +3881,7 @@ function hideFx(bg,modal){
  if(bg){const b=document.getElementById(bg);if(b)b.classList.remove('show');}
  if(m)m.classList.remove('open');
 }
-/* ===== ASSEMBLE ON OPEN (toote tukde judte hue, gol ghumte) ===== */
+/* ===== ASSEMBLE ON OPEN (broken pieces join back, spinning) ===== */
 function assembleFx(el){
  try{
   if(window.VG_NO_FX||document.body.classList.contains('no-fx'))return;
@@ -3878,7 +3911,7 @@ function assembleFx(el){
  const watch=()=>{document.querySelectorAll('#ordPage,#shop').forEach(el=>{try{obs.observe(el,{attributes:true,attributeFilter:['class']});}catch(e){}});};
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watch);else watch();
 })();
-/* ===== BASIC ANTI-TAMPER (casual users ke liye) ===== */
+/* ===== BASIC ANTI-TAMPER (for casual users) ===== */
 (function(){
  document.addEventListener('contextmenu',e=>{e.preventDefault();});
  document.addEventListener('keydown',e=>{
@@ -3965,7 +3998,7 @@ function assembleFx(el){
   ctx.globalAlpha=1;ctx.shadowBlur=0;
  })();
 })();
-/* ===== SMOKE LOOP (GPU layers — phone par OFF, PC par halka) ===== */
+/* ===== SMOKE LOOP (GPU layers — OFF on phone, light on PC) ===== */
 (function(){
  if(window.VG_NO_FX||document.body.classList.contains('no-fx'))return;
  const box=document.createElement('div');
@@ -4024,7 +4057,7 @@ function assembleFx(el){
 renderSite();
 try{document.getElementById('uname').value=localStorage.getItem('vg_remember')||'';}catch(e){}
 observeReveals();
-/* storage health badge — save kaam karega ya nahi, turant dikhega */
+/* storage health badge — shows instantly whether save will work */
 function vgStorageBadge(){
  try{
   let ok=false;try{localStorage.setItem('vg_t','1');ok=localStorage.getItem('vg_t')==='1';localStorage.removeItem('vg_t');}catch(e){ok=false;}
@@ -4037,7 +4070,7 @@ function vgStorageBadge(){
  }catch(e){}
 }
 try{vgStorageBadge();}catch(e){}
-/* chhupa JS error owner ko turant dikhega (throttled) */
+/* hidden JS errors show instantly to owner (throttled) */
 window.addEventListener('error',function(e){
  try{
   if(typeof isOwner!=='function'||!isOwner())return;
@@ -4054,6 +4087,7 @@ try{
  const b=document.getElementById('storeDot');
  if(b)b.innerText=b.innerText.replace(/ • build /,' • seen '+n+' • build ');
 }catch(e){}
+try{if(location.protocol.indexOf('http')===0&&'serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}}catch(e){}
 try{cloudInit();}catch(e){}
 try{if(window._restoreSession){window._restoreSession=false;enterShop();}}catch(e){}
 </script>
