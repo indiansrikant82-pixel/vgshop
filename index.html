@@ -961,6 +961,7 @@ nav button{border-radius:0!important}
   <input id="np_apikey" type="password" placeholder="Seller / API Key (for this panel)">
   <input id="np_apiapp" placeholder="App ID (for AuthLX / GenzAuth)">
   <input id="np_apiurl" placeholder="Custom Generate URL — {DAYS} {COUNT} {APP} {KEY}">
+  <input id="np_claim" placeholder="🎁 Claim link (earning website URL — empty = no claim button)">
   <label class="mswitch"><input type="checkbox" id="np_maint"> 🛠 Maintenance mode (panel will show as closed)</label>
   <input id="np_mmsg" placeholder="Maintenance text (e.g. UPDATE COMING SOON)">
   <label>Rates — add as many days as you want (name + price)</label>
@@ -1402,7 +1403,7 @@ function updInfoPatch(patch){
 function fldChanged(el){
  try{
   if(!canEdit()||!el||!el.id)return;
-  const map={rn_name:'name',rn_desc:'desc',rn_by:'by',rn_file:'pfile',rn_dev:'device',rn_mmsg:'maintMsg',rn_apiprov:'apiProv',rn_apikey:'apiKey',rn_apiapp:'apiApp',rn_apiurl:'apiUrl'};
+  const map={rn_name:'name',rn_desc:'desc',rn_by:'by',rn_file:'pfile',rn_dev:'device',rn_mmsg:'maintMsg',rn_apiprov:'apiProv',rn_apikey:'apiKey',rn_apiapp:'apiApp',rn_apiurl:'apiUrl',rn_claim:'claimUrl'};
   let k=map[el.id],v;
   if(el.id==='rf_feat'){k='features';v=String(el.value).split('\n').map(s=>s.trim()).filter(Boolean);}
   else v=el.value;
@@ -1422,10 +1423,10 @@ function buildFilterRows(){
  const dr=document.getElementById('devRow');
  if(dr)dr.innerHTML=_devs.map((d,i)=>'<button class="fbtn'+(fDev===d?' on':'')+'" onclick="setDeviceI('+i+')">'+(d==='All'?'All Systems':(d==='PC'?'ONLY PC':(d==='IOS'?'IOS IPHONE':d)))+'</button>').join('');
 }
-function saveInfo(pid,name,desc,by,features,pfile,device,maint,maintMsg,apiProv,apiKey,apiApp,apiUrl){
+function saveInfo(pid,name,desc,by,features,pfile,device,maint,maintMsg,apiProv,apiKey,apiApp,apiUrl,claimUrl){
  let all={};
  try{all=storeObj('vg_panelinfo');}catch(e){}
- all[pid]={name:name,desc:desc,by:by||'',features:features||[],pfile:pfile||'',device:device||'',maint:!!maint,maintMsg:maintMsg||'',apiProv:apiProv||'',apiKey:apiKey||'',apiApp:apiApp||'',apiUrl:apiUrl||''};localStorage.setItem('vg_panelinfo',JSON.stringify(all));
+ all[pid]={name:name,desc:desc,by:by||'',features:features||[],pfile:pfile||'',device:device||'',maint:!!maint,maintMsg:maintMsg||'',apiProv:apiProv||'',apiKey:apiKey||'',apiApp:apiApp||'',apiUrl:apiUrl||'',claimUrl:claimUrl||''};localStorage.setItem('vg_panelinfo',JSON.stringify(all));
  cloudSet('vg_panelinfo');
 }
 /* ===== PER-PANEL API (KeyAuth / AuthLX / GenzAuth / Custom — khaali = global) ===== */
@@ -1437,6 +1438,15 @@ function getApi(p){
  const s=getSite();return {prov:'keyauth',key:(s.kaseller||'').trim(),app:'',url:'',custom:false};
 }
 function apiName(pr){return pr==='keyauth'?'KeyAuth':pr==='authlx'?'AuthLX':pr==='genzauth'?'GenzAuth':pr==='custom'?'Custom URL':'—';}
+function getClaim(p){try{const u=getInfo(p.id).claimUrl||p.claimUrl||'';return String(u||'').trim();}catch(e){return '';}}
+function claimGo(pid){
+ try{
+  const p=findPanel(pid);if(!p)return;
+  if(isMaint(p)){maintBlock(pid);return;}
+  const u=getClaim(p);if(u)openLink(u,'_blank');
+ }catch(e){}
+ try{toggleRatesCard(pid);}catch(e){}
+}
 /* ===== USERS: created by owner, with % off ===== */
 function loadUsers(){
  try{
@@ -2110,7 +2120,8 @@ function finishGoogleLogin(em,displayName){
    showToast('✅ Google account registered!');
   }
   if(rec.blocked){msgBox('⛔ Your ID is blocked! Contact Owner.');return;}
-  sessionStorage.setItem('vg_role',rec.role);
+  // Gmail login = public access only (admin/reseller login with ID+password for their role)
+  sessionStorage.setItem('vg_role','public');
   sessionStorage.setItem('vg_user',rec.u);
   sessionStorage.setItem('vg_off',rec.off||0);
  }
@@ -2309,7 +2320,7 @@ function renderProducts(){
   }else if(v){
    const safeV=String(v).replace(/"/g,'&quot;');
    const cover=th?`<img src="${th}" alt="${pname}" loading="lazy" decoding="async" onerror="vgMediaFail(this)">`:`<div class="thumbph">🎬</div>`;
-   mediaHtml=`<div class="vwrap"><div class="thumbplay" data-pid="${p.id}" data-v="${safeV}" title="Tap to play video" onclick="playThumb(this)">${cover}</div></div>`;
+   mediaHtml=`<div class="vwrap"><div class="thumbplay" data-pid="${p.id}" data-v="${safeV}" title="Tap to play video" onclick="playThumb(this)">${cover}<button class="playov" aria-label="Play video">▶</button></div></div>`;
   }else if(th){
    mediaHtml=`<div class="vwrap"><img src="${th}" alt="${pname}" loading="lazy" decoding="async" onerror="vgMediaFail(this)"></div>`;
   }else{
@@ -2323,7 +2334,9 @@ function renderProducts(){
   const mTag=mOn?`<span class="maint-tag">🛠 MAINTENANCE</span>`:'';
   const actFile=mOn?`<button class="btn-shop dim" onclick="maintBlock('${p.id}')">⬇ UPDATE FILE</button>`:`<button class="btn-shop" onclick="openPfile('${p.id}')">⬇ UPDATE FILE</button>`;
   const actVid=mOn?`<button class="btn-update dim" onclick="maintBlock('${p.id}')">▶ VIDEO</button>`:`<button class="btn-update" onclick="playPanelVid(this,'${p.id}')">▶ VIDEO</button>`;
-  const actBuy=mOn?`<button class="discordbtn buykey dim" onclick="maintBlock('${p.id}')">PURCHASE KEY</button>`:`<button class="discordbtn buykey" onclick="toggleRatesCard('${p.id}')">PURCHASE KEY</button>`;
+  const hasFreeClaim=getRates(p).some(r=>eff(r.price)===0);
+  const claimUrl=getClaim(p);
+  const actBuy=mOn?`<button class="discordbtn buykey dim" onclick="maintBlock('${p.id}')">PURCHASE KEY</button>`:(claimUrl&&hasFreeClaim?`<button class="discordbtn buykey" onclick="claimGo('${p.id}')">🎁 CLAIM</button>`:`<button class="discordbtn buykey" onclick="toggleRatesCard('${p.id}')">PURCHASE KEY</button>`);
   box.innerHTML+=`<div class="card reveal" draggable="${isOwner()}" ondragstart="try{event.dataTransfer.setData('text/plain','${p.id}');this.classList.add('dragging');}catch(e){}" ondragend="this.classList.remove('dragging')" ondragover="if(isOwner())event.preventDefault()" ondrop="event.preventDefault();dropCard(event,'${p.id}')" style="transition-delay:${Math.min(i*70,560)}ms">${del}${edt}${isOwner()?`<div class="mvrow"><button onclick="movePanel('${p.id}',-1)">◀</button><button onclick="movePanel('${p.id}',1)">▶</button></div>`:''}<div class="brandline">${getBy(p)||'VG CHEATS'}</div>${mediaZone}<h3>${getName(p)}${mTag}</h3><p>${getDesc(p)}</p>${featHtml}<div class="btn-row">${actFile}${actVid}</div>${actBuy}<div class="inlineRates" id="ir_${p.id}" style="display:none"></div><button class="discordbtn dcjoin" style="margin-top:10px" onclick="openDc('${p.id}')">🎮 Discord Join</button></div>`;
  });
  refreshStats();
@@ -2403,7 +2416,7 @@ function drawRates(){
  try{
   if(!window._vgRemoteDraw&&document.getElementById('rateModal').classList.contains('open')){
    _stash={};
-   ['rn_name','rn_desc','rn_by','rn_file','rn_dev','rf_feat','rn_maint','rn_mmsg','rn_apiprov','rn_apikey','rn_apiapp','rn_apiurl','vurl','vfullurl','thurl','turl','durl'].forEach(id=>{
+   ['rn_name','rn_desc','rn_by','rn_file','rn_dev','rf_feat','rn_maint','rn_mmsg','rn_apiprov','rn_apikey','rn_apiapp','rn_apiurl','rn_claim','vurl','vfullurl','thurl','turl','durl'].forEach(id=>{
     const n=document.getElementById(id);if(!n)return;
     _stash[id]=n.type==='checkbox'?n.checked:n.value;
    });
@@ -2420,7 +2433,7 @@ function drawRates(){
   }
  });
  if(rateEdit){
-  box.innerHTML=`<div class="rate-row edit" style="display:block"><input id="rn_name" style="width:100%;margin-bottom:6px" onchange="fldChanged(this)" value="${escHtml(getName(p))}" placeholder="Panel name"><input id="rn_desc" style="width:100%" onchange="fldChanged(this)" value="${escHtml(getDesc(p))}" placeholder="Detail (1 line)"></div><div class="rate-row edit" style="display:block"><input id="rn_by" style="width:100%;margin-bottom:6px" onchange="fldChanged(this)" value="${escHtml(getBy(p))}" placeholder="Brand line (e.g. VG CHEATS FF)"><input id="rn_file" style="width:100%;margin-bottom:6px" onchange="fldChanged(this)" value="${escHtml(getPfile(p))}" placeholder="Update file link (https://...)"><select id="rn_dev" style="width:100%;padding:9px;margin-bottom:6px;border-radius:8px;border:1px solid #334;background:#0a0f2a;color:#fff" onchange="fldChanged(this)"><option${getDev(p)==='ANDROID'?' selected':''}>ANDROID</option><option${getDev(p)==='IOS'?' selected':''}>IOS</option><option${getDev(p)==='PC'?' selected':''}>PC</option></select><textarea id="rf_feat" style="width:100%;background:#0a0f2a;border:1px solid #334;color:#fff;border-radius:8px;padding:9px" rows="3" onchange="fldChanged(this)" placeholder="Features — one per line">${escHtml(getFeat(p).join('\n'))}</textarea><label class="mswitch"><input type="checkbox" id="rn_maint"${isMaint(p)?' checked':''} onchange="toggleMaint(this)"> 🛠 Maintenance mode (panel will show as closed)</label><input id="rn_mmsg" style="width:100%;margin-top:6px" onchange="setMaintMsg(this)" value="${String(getInfo(p.id).maintMsg||'').replace(/"/g,'&quot;')}" placeholder="Maintenance text (e.g. UPDATE COMING SOON)"><label style="font-size:.8rem;color:#9ab;text-align:left;display:block;margin-top:10px">🔑 Panel API — for key generation (empty = global KeyAuth)</label><select id="rn_apiprov" style="width:100%;padding:9px;margin-bottom:6px;border-radius:8px;border:1px solid #334;background:#0a0f2a;color:#fff" onchange="fldChanged(this)"><option value="">— Global (Site Settings) —</option><option value="keyauth"${getInfo(p.id).apiProv==='keyauth'?' selected':''}>KeyAuth</option><option value="authlx"${getInfo(p.id).apiProv==='authlx'?' selected':''}>AuthLX</option><option value="genzauth"${getInfo(p.id).apiProv==='genzauth'?' selected':''}>GenzAuth</option><option value="custom"${getInfo(p.id).apiProv==='custom'?' selected':''}>Custom URL</option></select><input id="rn_apikey" type="password" style="width:100%;margin-bottom:6px" onchange="fldChanged(this)" value="${String(getInfo(p.id).apiKey||'').replace(/"/g,'&quot;')}" placeholder="Seller / API Key (for this panel)"><input id="rn_apiapp" style="width:100%;margin-bottom:6px" onchange="fldChanged(this)" value="${String(getInfo(p.id).apiApp||'').replace(/"/g,'&quot;')}" placeholder="App ID (for AuthLX / GenzAuth)"><input id="rn_apiurl" style="width:100%" onchange="fldChanged(this)" value="${String(getInfo(p.id).apiUrl||'').replace(/"/g,'&quot;')}" placeholder="Custom Generate URL — {DAYS} {COUNT} {APP} {KEY}"></div>`+box.innerHTML;
+  box.innerHTML=`<div class="rate-row edit" style="display:block"><input id="rn_name" style="width:100%;margin-bottom:6px" onchange="fldChanged(this)" value="${escHtml(getName(p))}" placeholder="Panel name"><input id="rn_desc" style="width:100%" onchange="fldChanged(this)" value="${escHtml(getDesc(p))}" placeholder="Detail (1 line)"></div><div class="rate-row edit" style="display:block"><input id="rn_by" style="width:100%;margin-bottom:6px" onchange="fldChanged(this)" value="${escHtml(getBy(p))}" placeholder="Brand line (e.g. VG CHEATS FF)"><input id="rn_file" style="width:100%;margin-bottom:6px" onchange="fldChanged(this)" value="${escHtml(getPfile(p))}" placeholder="Update file link (https://...)"><select id="rn_dev" style="width:100%;padding:9px;margin-bottom:6px;border-radius:8px;border:1px solid #334;background:#0a0f2a;color:#fff" onchange="fldChanged(this)"><option${getDev(p)==='ANDROID'?' selected':''}>ANDROID</option><option${getDev(p)==='IOS'?' selected':''}>IOS</option><option${getDev(p)==='PC'?' selected':''}>PC</option></select><textarea id="rf_feat" style="width:100%;background:#0a0f2a;border:1px solid #334;color:#fff;border-radius:8px;padding:9px" rows="3" onchange="fldChanged(this)" placeholder="Features — one per line">${escHtml(getFeat(p).join('\n'))}</textarea><label class="mswitch"><input type="checkbox" id="rn_maint"${isMaint(p)?' checked':''} onchange="toggleMaint(this)"> 🛠 Maintenance mode (panel will show as closed)</label><input id="rn_mmsg" style="width:100%;margin-top:6px" onchange="setMaintMsg(this)" value="${String(getInfo(p.id).maintMsg||'').replace(/"/g,'&quot;')}" placeholder="Maintenance text (e.g. UPDATE COMING SOON)"><label style="font-size:.8rem;color:#9ab;text-align:left;display:block;margin-top:10px">🔑 Panel API — for key generation (empty = global KeyAuth)</label><select id="rn_apiprov" style="width:100%;padding:9px;margin-bottom:6px;border-radius:8px;border:1px solid #334;background:#0a0f2a;color:#fff" onchange="fldChanged(this)"><option value="">— Global (Site Settings) —</option><option value="keyauth"${getInfo(p.id).apiProv==='keyauth'?' selected':''}>KeyAuth</option><option value="authlx"${getInfo(p.id).apiProv==='authlx'?' selected':''}>AuthLX</option><option value="genzauth"${getInfo(p.id).apiProv==='genzauth'?' selected':''}>GenzAuth</option><option value="custom"${getInfo(p.id).apiProv==='custom'?' selected':''}>Custom URL</option></select><input id="rn_apikey" type="password" style="width:100%;margin-bottom:6px" onchange="fldChanged(this)" value="${String(getInfo(p.id).apiKey||'').replace(/"/g,'&quot;')}" placeholder="Seller / API Key (for this panel)"><input id="rn_apiapp" style="width:100%;margin-bottom:6px" onchange="fldChanged(this)" value="${String(getInfo(p.id).apiApp||'').replace(/"/g,'&quot;')}" placeholder="App ID (for AuthLX / GenzAuth)"><input id="rn_apiurl" style="width:100%" onchange="fldChanged(this)" value="${String(getInfo(p.id).apiUrl||'').replace(/"/g,'&quot;')}" placeholder="Custom Generate URL — {DAYS} {COUNT} {APP} {KEY}"><input id="rn_claim" style="width:100%;margin-top:6px" onchange="fldChanged(this)" value="${String(getInfo(p.id).claimUrl||'').replace(/"/g,'&quot;')}" placeholder="🎁 Claim link (earning website URL — empty = no claim button)"></div>`+box.innerHTML;
  }
  const eb=document.getElementById('rateEditBtn');
  eb.style.display=canEdit()?'':'none';
@@ -2446,15 +2459,15 @@ function collectRateForm(){
   if(!le||!pe)continue;
    out.push({label:le.value.trim()||('Plan '+(i+1)),price:parseInt(String(pe.value).replace(/[^0-9]/g,''))||0});
  }
- const nn=document.getElementById('rn_name'),nd=document.getElementById('rn_desc'),nb=document.getElementById('rn_by'),nf=document.getElementById('rn_file'),ff=document.getElementById('rf_feat'),ddv=document.getElementById('rn_dev'),mn=document.getElementById('rn_maint'),mm=document.getElementById('rn_mmsg'),ap=document.getElementById('rn_apiprov'),ak=document.getElementById('rn_apikey'),aa=document.getElementById('rn_apiapp'),au=document.getElementById('rn_apiurl');
+ const nn=document.getElementById('rn_name'),nd=document.getElementById('rn_desc'),nb=document.getElementById('rn_by'),nf=document.getElementById('rn_file'),ff=document.getElementById('rf_feat'),ddv=document.getElementById('rn_dev'),mn=document.getElementById('rn_maint'),mm=document.getElementById('rn_mmsg'),ap=document.getElementById('rn_apiprov'),ak=document.getElementById('rn_apikey'),aa=document.getElementById('rn_apiapp'),au=document.getElementById('rn_apiurl'),cl=document.getElementById('rn_claim');
  const feats=ff?ff.value.split('\n').map(s=>s.trim()).filter(Boolean):[];
- return {rates:out,name:nn&&nn.value.trim()?nn.value.trim():p.name,desc:nd&&nd.value.trim()?nd.value.trim():p.desc,by:nb?nb.value.trim():'',features:feats,pfile:nf?nf.value.trim():'',device:ddv?ddv.value:getDev(p),maint:mn?mn.checked:isMaint(p),maintMsg:mm?mm.value.trim():getInfo(p.id).maintMsg||'',apiProv:ap?ap.value:'',apiKey:ak?ak.value.trim():getInfo(p.id).apiKey||'',apiApp:aa?aa.value.trim():getInfo(p.id).apiApp||'',apiUrl:au?au.value.trim():getInfo(p.id).apiUrl||''};
+ return {rates:out,name:nn&&nn.value.trim()?nn.value.trim():p.name,desc:nd&&nd.value.trim()?nd.value.trim():p.desc,by:nb?nb.value.trim():'',features:feats,pfile:nf?nf.value.trim():'',device:ddv?ddv.value:getDev(p),maint:mn?mn.checked:isMaint(p),maintMsg:mm?mm.value.trim():getInfo(p.id).maintMsg||'',apiProv:ap?ap.value:'',apiKey:ak?ak.value.trim():getInfo(p.id).apiKey||'',apiApp:aa?aa.value.trim():getInfo(p.id).apiApp||'',apiUrl:au?au.value.trim():getInfo(p.id).apiUrl||'',claimUrl:cl?cl.value.trim():getInfo(p.id).claimUrl||''};
 }
 function saveMedia(){
  if(!checkAdmin())return;
  try{
   const c=collectRateForm();
-  if(c){saveRates(ratePid,c.rates);saveInfo(ratePid,c.name,c.desc,c.by,c.features,c.pfile,c.device,c.maint,c.maintMsg,c.apiProv,c.apiKey,c.apiApp,c.apiUrl);}
+  if(c){saveRates(ratePid,c.rates);saveInfo(ratePid,c.name,c.desc,c.by,c.features,c.pfile,c.device,c.maint,c.maintMsg,c.apiProv,c.apiKey,c.apiApp,c.apiUrl,c.claimUrl);}
   saveVideo(ratePid,document.getElementById('vurl').value.trim());
   saveVfull(ratePid,document.getElementById('vfullurl').value.trim());
   saveThumb(ratePid,document.getElementById('thurl').value.trim());
@@ -2481,7 +2494,7 @@ function addRateRow(){
  const p=findPanel(ratePid);
  const r=c?c.rates.slice():getRates(p).slice();
  r.push({label:'New Plan',price:100});saveRates(ratePid,r);
- if(c)saveInfo(ratePid,c.name,c.desc,c.by,c.features,c.pfile,c.device,c.maint,c.maintMsg,c.apiProv,c.apiKey,c.apiApp,c.apiUrl);
+ if(c)saveInfo(ratePid,c.name,c.desc,c.by,c.features,c.pfile,c.device,c.maint,c.maintMsg,c.apiProv,c.apiKey,c.apiApp,c.apiUrl,c.claimUrl);
  drawRates();renderProducts();
 }
 /* plan delete par uski keys bhi shift karo taaki galat plan par na lage */
@@ -2504,7 +2517,7 @@ function delRate(i){
  const p=findPanel(ratePid);
  const r=c?c.rates.slice():getRates(p).slice();
  r.splice(i,1);saveRates(ratePid,r);shiftPools(ratePid,i);
- if(c)saveInfo(ratePid,c.name,c.desc,c.by,c.features,c.pfile,c.device,c.maint,c.maintMsg,c.apiProv,c.apiKey,c.apiApp,c.apiUrl);
+ if(c)saveInfo(ratePid,c.name,c.desc,c.by,c.features,c.pfile,c.device,c.maint,c.maintMsg,c.apiProv,c.apiKey,c.apiApp,c.apiUrl,c.claimUrl);
  try{if(JSON.stringify(getRates(p))!==JSON.stringify(r))showToast('⚠ Save blocked — turn browser storage ON');}catch(e){}
  drawRates();renderProducts();
 }
@@ -2521,7 +2534,7 @@ function verifyPanelSave(pid,c){
 function saveRateEdit(){
  try{
   const c=collectRateForm();if(!c){msgBox('Form not found — reopen the modal.');return;}
-  saveRates(ratePid,c.rates);saveInfo(ratePid,c.name,c.desc,c.by,c.features,c.pfile,c.device,c.maint,c.maintMsg,c.apiProv,c.apiKey,c.apiApp,c.apiUrl);
+  saveRates(ratePid,c.rates);saveInfo(ratePid,c.name,c.desc,c.by,c.features,c.pfile,c.device,c.maint,c.maintMsg,c.apiProv,c.apiKey,c.apiApp,c.apiUrl,c.claimUrl);
   try{
    saveVideo(ratePid,document.getElementById('vurl').value.trim());
    saveVfull(ratePid,document.getElementById('vfullurl').value.trim());
@@ -2569,7 +2582,7 @@ function quickKeys(pid,i){
  let made=0,guard=0;
  while(made<10&&guard<300){guard++;let k=pre;for(let g=0;g<2;g++){for(let j=0;j<4;j++)k+=chars[Math.floor(Math.random()*chars.length)];if(g===0)k+='-';}if(set.has(k))continue;set.add(k);made++;}
  pool.keys=[...set];savePool(pid,i,pool);
- try{const cc=(document.getElementById('rn_name'))?collectRateForm():null;if(cc){saveRates(ratePid,cc.rates);saveInfo(ratePid,cc.name,cc.desc,cc.by,cc.features,cc.pfile,cc.device,cc.maint,cc.maintMsg,cc.apiProv,cc.apiKey,cc.apiApp,cc.apiUrl);}}catch(e){}
+ try{const cc=(document.getElementById('rn_name'))?collectRateForm():null;if(cc){saveRates(ratePid,cc.rates);saveInfo(ratePid,cc.name,cc.desc,cc.by,cc.features,cc.pfile,cc.device,cc.maint,cc.maintMsg,cc.apiProv,cc.apiKey,cc.apiApp,cc.apiUrl,cc.claimUrl);}}catch(e){}
  try{rebuildInline(pid);}catch(e){}
  try{if(document.getElementById('rateModal').classList.contains('open'))drawRates();}catch(e){}
  showToast('⚡ +'+made+' keys added!');
@@ -2971,7 +2984,7 @@ function genKeysDone(list,days,anm){
   savePool(keyPid,keyIdx,pool);
   try{document.getElementById('keyArea').value=pool.keys.join('\n');}catch(e){}
   try{document.getElementById('keyLeft').innerText=pool.keys.length;}catch(e){}
-  try{const cc=(document.getElementById('rn_name'))?collectRateForm():null;if(cc){saveRates(ratePid,cc.rates);saveInfo(ratePid,cc.name,cc.desc,cc.by,cc.features,cc.pfile,cc.device,cc.maint,cc.maintMsg,cc.apiProv,cc.apiKey,cc.apiApp,cc.apiUrl);}}catch(e){}
+  try{const cc=(document.getElementById('rn_name'))?collectRateForm():null;if(cc){saveRates(ratePid,cc.rates);saveInfo(ratePid,cc.name,cc.desc,cc.by,cc.features,cc.pfile,cc.device,cc.maint,cc.maintMsg,cc.apiProv,cc.apiKey,cc.apiApp,cc.apiUrl,cc.claimUrl);}}catch(e){}
   try{drawRates();}catch(e){}
   showToast('✅ '+list.length+' fresh keys added ('+days+' days, '+anm+')!');
  }else{
@@ -3013,7 +3026,7 @@ function importKeyAuthJson(){
 function saveKeysForm(){
  const lines=document.getElementById('keyArea').value.split('\n').map(s=>s.trim()).filter(Boolean);
  savePool(keyPid,keyIdx,{keys:lines,file:document.getElementById('keyFile').value.trim()});
- try{const cc=(document.getElementById('rn_name'))?collectRateForm():null;if(cc){saveRates(ratePid,cc.rates);saveInfo(ratePid,cc.name,cc.desc,cc.by,cc.features,cc.pfile,cc.device,cc.maint,cc.maintMsg,cc.apiProv,cc.apiKey,cc.apiApp,cc.apiUrl);}}catch(e){}
+ try{const cc=(document.getElementById('rn_name'))?collectRateForm():null;if(cc){saveRates(ratePid,cc.rates);saveInfo(ratePid,cc.name,cc.desc,cc.by,cc.features,cc.pfile,cc.device,cc.maint,cc.maintMsg,cc.apiProv,cc.apiKey,cc.apiApp,cc.apiUrl,cc.claimUrl);}}catch(e){}
  closeKeys();drawRates();showToast('✅ Keys saved ('+lines.length+')');
 }
 function genBulkKeys(){
@@ -3035,7 +3048,7 @@ function genBulkKeys(){
  savePool(keyPid,keyIdx,{keys:arr,file:document.getElementById('keyFile').value.trim()});
  document.getElementById('keyArea').value=arr.join('\n');
  document.getElementById('keyLeft').innerText=arr.length;
- try{const cc=(document.getElementById('rn_name'))?collectRateForm():null;if(cc){saveRates(ratePid,cc.rates);saveInfo(ratePid,cc.name,cc.desc,cc.by,cc.features,cc.pfile,cc.device,cc.maint,cc.maintMsg,cc.apiProv,cc.apiKey,cc.apiApp,cc.apiUrl);}}catch(e){}
+ try{const cc=(document.getElementById('rn_name'))?collectRateForm():null;if(cc){saveRates(ratePid,cc.rates);saveInfo(ratePid,cc.name,cc.desc,cc.by,cc.features,cc.pfile,cc.device,cc.maint,cc.maintMsg,cc.apiProv,cc.apiKey,cc.apiApp,cc.apiUrl,cc.claimUrl);}}catch(e){}
  drawRates();
  showToast('⚡ '+made+' keys generated!');
 }
@@ -3111,7 +3124,7 @@ function buyRate(pid,i){
 function openPanelForm(){
  if(!isOwner()){msgBox('🔒 Only Owner can add panels.');return;}
  try{
-  ['np_name','np_desc','np_by','np_pfile','np_feat','np_video','np_vfull','np_thumb','np_tg','np_dc','np_apikey','np_apiapp','np_apiurl','np_mmsg'].forEach(i=>{document.getElementById(i).value='';});
+  ['np_name','np_desc','np_by','np_pfile','np_feat','np_video','np_vfull','np_thumb','np_tg','np_dc','np_apikey','np_apiapp','np_apiurl','np_claim','np_mmsg'].forEach(i=>{document.getElementById(i).value='';});
   document.getElementById('np_apiprov').value='';document.getElementById('np_maint').checked=false;
  }catch(e){}
  document.getElementById('np_rates').innerHTML='';
@@ -3149,14 +3162,14 @@ function savePanel(){
   device:document.getElementById('np_device').value||'ANDROID',
   video:document.getElementById('np_video').value.trim(),
   vfull:document.getElementById('np_vfull').value.trim(),
-  thumb:document.getElementById('np_thumb').value.trim(),
+  thumb:document.getElementById('np_thumb').value.trim(),claimUrl:document.getElementById('np_claim').value.trim(),
   tg:document.getElementById('np_tg').value.trim()||'https://t.me/panelstore_main',
   dc:document.getElementById('np_dc').value.trim()||'https://discord.gg/wKTzG3kDBQ',
   rates:rates});
  localStorage.setItem('vg_custom_panels',JSON.stringify(arr));
  cloudSet('vg_custom_panels');
- try{saveInfo(nid,name,document.getElementById('np_desc').value.trim()||'New panel',document.getElementById('np_by').value.trim(),document.getElementById('np_feat').value.split('\n').map(s=>s.trim()).filter(Boolean),document.getElementById('np_pfile').value.trim(),document.getElementById('np_device').value||'ANDROID',document.getElementById('np_maint').checked,document.getElementById('np_mmsg').value.trim(),document.getElementById('np_apiprov').value,document.getElementById('np_apikey').value.trim(),document.getElementById('np_apiapp').value.trim(),document.getElementById('np_apiurl').value.trim());}catch(e){}
- ['np_name','np_desc','np_by','np_pfile','np_feat','np_video','np_vfull','np_thumb','np_tg','np_dc','np_apikey','np_apiapp','np_apiurl','np_mmsg'].forEach(i=>document.getElementById(i).value='');
+ try{saveInfo(nid,name,document.getElementById('np_desc').value.trim()||'New panel',document.getElementById('np_by').value.trim(),document.getElementById('np_feat').value.split('\n').map(s=>s.trim()).filter(Boolean),document.getElementById('np_pfile').value.trim(),document.getElementById('np_device').value||'ANDROID',document.getElementById('np_maint').checked,document.getElementById('np_mmsg').value.trim(),document.getElementById('np_apiprov').value,document.getElementById('np_apikey').value.trim(),document.getElementById('np_apiapp').value.trim(),document.getElementById('np_apiurl').value.trim(),document.getElementById('np_claim').value.trim());}catch(e){}
+ ['np_name','np_desc','np_by','np_pfile','np_feat','np_video','np_vfull','np_thumb','np_tg','np_dc','np_apikey','np_apiapp','np_apiurl','np_claim','np_mmsg'].forEach(i=>document.getElementById(i).value='');
  try{document.getElementById('np_apiprov').value='';document.getElementById('np_maint').checked=false;}catch(e){}
  closePanelForm();renderProducts();
  try{
@@ -3219,7 +3232,7 @@ function drawUsers(){
   const isNew=x.ts&&(Date.now()-x.ts)<7*24*3600*1000;
   if(uFilter==='new'&&!isNew)return;
   shown++;
-  box.innerHTML+=`<div class="urow"><span><b>${x.u}</b> ${x.role==='admin'?'🛡 Admin':x.role==='reseller'?'🤝 Reseller':'👤 Normal'}${isNew?'<b style="color:#ffd83d"> 🆕 NEW</b>':''} ${x.blocked?'<b style="color:#ff3d81">⛔ BLOCKED</b>':''}<br><span class="off">${x.off||0}% OFF</span> <span style="color:#0f9">₹${(function(){try{return getBal(x.u);}catch(e){return 0;}})().toLocaleString('en-IN')}</span> <span style="color:#778">| pass: ${x.p}${x.email?'<br>✉ '+x.email:''}${x.ts?'<br><span style="color:#778">joined '+new Date(x.ts).toLocaleDateString('en-IN')+'</span>':''}</span></span><span class="ops"><button style="background:#1a2456;color:#fff" onclick="editRole(${i})" title="Change role">🔄</button><button style="background:#1a2456;color:#fff" onclick="openPacc(${i})" title="Free panels">🎛</button><button style="background:#1a2456;color:#fff" onclick="editOff(${i})">Edit %</button><button style="background:#1a2456;color:#fff" onclick="editBal(${i})" title="Wallet">💰</button><button style="background:#1a2456;color:#fff" onclick="editPass(${i})">🔑</button><button style="background:#1a2456;color:#fff" onclick="resetFreeIdx(${i})" title="Reset free-key claim">🎁</button><button style="background:${x.blocked?'#00c853':'#ff9d00'};color:#fff" onclick="toggleBlock(${i})">${x.blocked?'▶ Unblock':'⏸ Block'}</button><button style="background:#ff3d81;color:#fff" onclick="delUser(${i})">✖</button></span></div>`;
+  box.innerHTML+=`<div class="urow"><span><b>${x.u}</b> ${x.role==='admin'?'🛡 Admin':x.role==='reseller'?'🤝 Reseller':'👤 Normal'}${isNew?'<b style="color:#ffd83d"> 🆕 NEW</b>':''} ${x.blocked?'<b style="color:#ff3d81">⛔ BLOCKED</b>':''}<br><span class="off">${x.off||0}% OFF</span> <span style="color:#0f9">₹${(function(){try{return getBal(x.u);}catch(e){return 0;}})().toLocaleString('en-IN')}</span> <span style="color:#778">| pass: ${x.p}${x.email?'<br>✉ '+x.email:''}${x.ts?'<br><span style="color:#778">joined '+new Date(x.ts).toLocaleDateString('en-IN')+'</span>':''}</span></span><span class="ops"><button style="background:#1a2456;color:#fff" onclick="editRole(${i})" title="Change role">🔄</button><button style="background:#1a2456;color:#fff" onclick="openPacc(${i})" title="Free panels">🎛</button><button style="background:#1a2456;color:#fff" onclick="editOff(${i})">Edit %</button><button style="background:#1a2456;color:#fff" onclick="editBal(${i})" title="Wallet">💰</button><button style="background:#1a2456;color:#fff" onclick="editPass(${i})">🔑</button><button style="background:#1a2456;color:#fff" onclick="editEmail(${i})" title="Gmail (Google login link)">📧</button><button style="background:#1a2456;color:#fff" onclick="resetFreeIdx(${i})" title="Reset free-key claim">🎁</button><button style="background:${x.blocked?'#00c853':'#ff9d00'};color:#fff" onclick="toggleBlock(${i})">${x.blocked?'▶ Unblock':'⏸ Block'}</button><button style="background:#ff3d81;color:#fff" onclick="delUser(${i})">✖</button></span></div>`;
  });
  if(!shown)box.innerHTML+='<p style="color:#9ab;text-align:center">Nobody in this list.</p>';
 }
@@ -3305,6 +3318,16 @@ async function editPass(i){
  const v=await askInput('Enter new password for '+arr[i].u+' (current: '+arr[i].p+')',arr[i].p);
  if(v===null||!String(v).trim())return;
  arr[i].p=String(v).trim();saveUsers(arr);drawUsers();msgBox('✅ Password changed');
+}
+async function editEmail(i){
+ const arr=loadUsers(),x=arr[i];if(!x)return;
+ const v=await askInput('Gmail for '+x.u+' (Google login links with this)',x.email||'');
+ if(v===null)return;
+ const em=String(v).trim().toLowerCase();
+ if(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){msgBox('Enter a valid Gmail or leave empty');return;}
+ if(em&&arr.some((y,j)=>j!==i&&((y.email||'').toLowerCase())===em)){msgBox('This Gmail is already on another ID');return;}
+ x.email=em;saveUsers(arr);drawUsers();
+ showToast(em?'✅ Gmail linked: '+em:'Gmail removed');
 }
 async function delUser(i){
  const arr=loadUsers();
