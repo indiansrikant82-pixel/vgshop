@@ -827,7 +827,7 @@ nav button{border-radius:0!important}
         <label class="glabel">Username</label>
         <div class="gfield"><i class="gico">👤</i><input id="uname" placeholder="Your username"></div>
         <label class="glabel">Password</label>
-        <div class="gfield"><i class="gico">🔒</i><input id="upass" type="password" placeholder="••••••••"></div>
+        <div class="gfield"><i class="gico">🔒</i><input id="upass" type="password" placeholder="••••••••"><button class="geye" onclick="var i=document.getElementById('upass');i.type=i.type==='password'?'text':'password'">👁</button></div>
         <div class="grow"><label class="gcheck" style="margin-top:0"><input type="checkbox" id="remMe"> Remember me</label><button class="flink" onclick="forgetPass()">Forgot password?</button></div>
         <button class="gbtn" onclick="remSave();doLogin()">Sign In &nbsp;→</button>
         <div class="gdiv">OR CONTINUE WITH</div>
@@ -2615,8 +2615,9 @@ function rateRowHtml(pid,r,i,off,buyLabel){
  var unit=eff(r.price),q=getQty(pid,i),total=unit*q;
  var price=off>0?'<b>₹'+total+'</b> <span class="strike">₹'+(r.price*q)+'</span>':'<b>₹'+total+'</b>';
  var left=getPool(pid,i).keys.length;
+ var freeAc=isPanelFree(pid);
  var claimed=unit===0&&!isOwner()&&freeClaimed(curUser(),pid);
- return `<div class="rate-row oneline" data-pid="${pid}" data-i="${i}"><span class="rl">${r.label} ${price} <small class="${left?'stk':'out'}">- ${left?left+' left':'sold out'}</small></span><span class="rr">${claimed?`<button class="buybtn sm dim" onclick="freeUsedMsg()">USED</button>`:left?`<span class="qstep"><button onclick="chQtyBtn(this,-1)">-</button><b>${q}</b><button onclick="chQtyBtn(this,1)">+</button></span>${isOwner()?`<button class="genbtn" title="Quick +10 keys" onclick="quickKeys('${pid}',${i})">✨</button>`:''}<button class="buybtn sm" onclick="buyRate('${pid}',${i})">${buyLabel}</button>`:`<button class="buybtn sm dim" onclick="openOos('${pid}',${i})">${buyLabel}</button>`}</span></div>`;
+ return `<div class="rate-row oneline" data-pid="${pid}" data-i="${i}"><span class="rl">${r.label} ${price} <small class="${left?'stk':'out'}">- ${left?left+' left':'sold out'}</small></span><span class="rr">${claimed?`<button class="buybtn sm dim" onclick="freeUsedMsg()">USED</button>`:left?`<span class="qstep"><button onclick="chQtyBtn(this,-1)">-</button><b>${q}</b><button onclick="chQtyBtn(this,1)">+</button></span>${isOwner()?`<button class="genbtn" title="Quick +10 keys" onclick="quickKeys('${pid}',${i})">✨</button>`:''}${freeAc?`<small class="stk">FREE ✓</small>`:''}<button class="buybtn sm" onclick="buyRate('${pid}',${i})">${buyLabel}</button>`:`<button class="buybtn sm dim" onclick="openOos('${pid}',${i})">${buyLabel}</button>`}</span></div>`;
 }
 function rebuildInline(pid){
  const box=document.getElementById('ir_'+pid);
