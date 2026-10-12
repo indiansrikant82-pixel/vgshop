@@ -3306,11 +3306,11 @@ function addUser(){
  document.querySelectorAll('#nu_panels input:checked').forEach(c=>c.checked=false);
  drawUsers();showToast('✅ User created: '+n);
 }
-let paccIdx=-1;
+let paccIdx=-1,paccUser='';
 function openPacc(i){
  if(!isOwner())return;
  const arr=loadUsers(),x=arr[i];if(!x)return;
- paccIdx=i;
+ paccIdx=i;paccUser=String(x.u);
  document.getElementById('paccUser').innerText=x.u+' — tick = FREE for this admin';
  const box=document.getElementById('paccList');box.innerHTML='';
  const allowed=(x.freePanels||[]).map(String);
@@ -3323,10 +3323,11 @@ function openPacc(i){
 }
 function closePacc(){document.getElementById('paccBg').classList.remove('show');document.getElementById('paccModal').classList.remove('open');}
 function savePacc(){
- if(paccIdx<0)return;
  const arr=loadUsers();
- arr[paccIdx].freePanels=[...document.querySelectorAll('#paccList input:checked')].map(c=>String(c.dataset.pid));
- saveUsers(arr);closePacc();drawUsers();
+ const idx=arr.findIndex(x=>String(x.u).toLowerCase()===String(paccUser||'').toLowerCase());
+ if(idx<0){msgBox('User not found — list changed, reopen and retry');return;}
+ arr[idx].freePanels=[...document.querySelectorAll('#paccList input:checked')].map(c=>String(c.dataset.pid));
+ paccIdx=idx;saveUsers(arr);closePacc();drawUsers();
  showToast('✅ Free panels saved');
 }
 function exportUsers(){
