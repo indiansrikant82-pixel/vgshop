@@ -786,6 +786,129 @@ input:focus,textarea:focus,select:focus{border-color:rgba(245,197,24,.7)!importa
 nav button{border-radius:0!important}
 #pmenu{border-radius:0!important}
 #pmenu button{border-radius:0!important}
+/* ===== MODE SWITCH (pill toggle, ON=dark) ===== */
+#themeBtn{background:none!important;border:none!important;box-shadow:none!important}
+.modeknob{position:relative;width:46px;height:46px;border-radius:50%!important;background:radial-gradient(circle at 50% 32%,#23232f,#0a0a10 72%);border:1px solid rgba(255,255,255,.1);cursor:grab;flex-shrink:0;padding:0;box-shadow:0 0 0 3px rgba(0,0,0,.35),0 0 18px rgba(124,58,237,.35),inset 0 0 14px rgba(124,58,237,.18);touch-action:none}
+.modeknob:active{cursor:grabbing}
+.modeknob i{position:absolute;left:50%;top:50%;width:5px;height:15px;margin:-15px 0 0 -2.5px;border-radius:3px;background:#ff5e9d;box-shadow:0 0 10px #ff5e9d,0 0 20px rgba(255,94,157,.5);transform-origin:50% 100%;transform:rotate(-135deg);font-style:normal;pointer-events:none}
+.modeknob::before{content:'';position:absolute;inset:6px;border-radius:50%;border:1px solid rgba(255,255,255,.09);pointer-events:none}
+body.light .modeknob{background:radial-gradient(circle at 50% 35%,#ffffff,#dfe3ee);border-color:rgba(138,106,0,.5)}
+#dimVeil{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:40;transition:opacity .15s}
+.geye.pwt{width:42px;height:23px;border-radius:14px;background:rgba(255,255,255,.1);border:1px solid rgba(245,197,24,.4);position:relative;flex-shrink:0;font-size:0}
+.geye.pwt::after{content:'';position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:#8b8b9e;transition:left .2s,background .2s}
+.geye.pwt.on::after{left:21px;background:#f5c518}
+/* ===== WHITE MODE (full light theme) ===== */
+body.light{background:#e9dcc0;background-image:radial-gradient(circle at 12% 8%,rgba(184,134,11,.12),transparent 42%),radial-gradient(circle at 88% 90%,rgba(184,134,11,.1),transparent 42%)}
+/* ===== SOFT WHITE (ankh me na lage) ===== */
+body.light,body.light nav,body.light .sbox,body.light .fpanel,body.light .card,body.light .orow,body.light .urow,body.light .rate-row,body.light #pmenu,body.light .login-card.gold,body.light .minirow,body.light .accline{background-color:#e9dcc0}
+body.light nav{background:rgba(244,241,232,.94)}
+body.light .sbox,body.light .fpanel{background:rgba(244,241,232,.85)}
+body.light .card{background:rgba(244,241,232,.92)}
+body.light .orow,body.light .urow,body.light .rate-row{background:#e9dcc0;border-color:#c6b184}
+body.light #helpModal,body.light #payModal,body.light #ordModal,body.light #keyModal,body.light #odetModal,body.light #oosModal,body.light #topModal,body.light #profModal,body.light #themeModal,body.light #cfModal,body.light #rateModal,body.light #panelForm,body.light #paccModal,body.light #userModal,body.light #siteModal,body.light #fpModal,body.light #ownerModal{background:rgba(244,241,232,.96)!important}
+body.light #pmenu{background:#e9dcc0}
+body.light .login-card.gold{background:rgba(244,241,232,.85)!important}
+body.light .minirow,body.light .accline{background:#ddcfa8}
+body.light .profLeft,body.light .profRight{background:#e9dcc0}
+body.light .gsoc{background:#e9dcc0!important;border-color:#bfb187!important}
+body.light #ordPage,body.light #profPage{background:rgba(244,241,232,.92)}
+body.light #ordPage .ordhead{background:rgba(244,241,232,.96)}
+body.light nav{background:rgba(255,255,255,.94)}
+body.light nav button{color:#3a3a45}
+body.light #navHome.active,body.light #navContact.active{color:#8a6a00}
+body.light .hero h1{color:#222}
+body.light #heroSub,body.light .csub,body.light .whoami{color:#555}
+body.light .whoami #whoUser{color:#111}
+body.light .supstrip{color:#5a4a00}
+body.light .sbox{background:rgba(255,255,255,.8);color:#222}
+body.light .sbox input{color:#222}
+body.light .sbox input::placeholder{color:#999}
+body.light .fpanel{background:rgba(255,255,255,.75)}
+body.light .fbtn{background:#fff;color:#6a5a00;border-color:rgba(184,134,11,.4)}
+body.light .stat{background:rgba(255,255,255,.85);color:#222}
+body.light .stat small{color:#777}
+body.light .tape{background:rgba(255,255,255,.7);color:#6a5a00}
+body.light .tape-in{color:#8a6a00}
+body.light .card{background:rgba(255,255,255,.9);color:#222}
+body.light .card>h3{color:#009e57}
+body.light .card>p{color:#666}
+body.light .brandline{color:#8a6a00;text-shadow:none}
+body.light .feat{background:rgba(184,134,11,.08);color:#222}
+body.light .vwrap{background:#e4e6ee}
+body.light .orow,body.light .urow{background:#fff;color:#222;border-color:#e2e2ea}
+body.light .rate-row{background:#fff;color:#222;border-color:#e2e2ea}
+body.light .rate-row .rl,body.light .drow span:first-child{color:#555}
+body.light .drow span:last-child{color:#111}
+body.light .keybox{background:#e6f7ec;color:#007a35;border-color:#007a35}
+body.light #payAmt,body.light #topAmt,body.light .pbal{color:#007a35;text-shadow:none}
+body.light #contact{color:#222}
+body.light #contact .cinfo{color:#444!important;text-shadow:none}
+body.light #contact input{background:#fff!important;color:#222!important}
+body.light footer{color:#888}
+body.light #pmenu{background:#fff;color:#222}
+body.light #helpModal,body.light #payModal,body.light #ordModal,body.light #keyModal,body.light #odetModal,body.light #oosModal,body.light #topModal,body.light #profModal,body.light #themeModal,body.light #cfModal,body.light #rateModal,body.light #panelForm,body.light #paccModal,body.light #userModal,body.light #siteModal,body.light #fpModal,body.light #ownerModal{background:rgba(255,255,255,.96)!important;color:#222}
+body.light #helpModal h2,body.light #payModal h2,body.light #ordModal h2,body.light #keyModal h2,body.light #odetModal h2,body.light #oosModal h2,body.light #topModal h2,body.light #profModal h2,body.light #themeModal h2,body.light #cfModal h2,body.light #rateModal h2,body.light #panelForm h2,body.light #paccModal h2,body.light #userModal h2,body.light #siteModal h2,body.light #fpModal h2,body.light #ownerModal h2,body.light .profRight h3{color:#8a6a00}
+body.light #helpModal input,body.light #payModal input,body.light #ordModal input,body.light #keyModal input,body.light #keyModal textarea,body.light #odetModal input,body.light #oosModal input,body.light #topModal input,body.light #profModal input,body.light #themeModal input,body.light #cfModal input,body.light #cfModal #cfInput,body.light #rateModal input,body.light #rateModal textarea,body.light #rateModal select,body.light #panelForm input,body.light #panelForm textarea,body.light #panelForm select,body.light #paccModal input,body.light #userModal input,body.light #userModal select,body.light #siteModal input,body.light #fpModal input,body.light #ownerModal input{background:#f1e8cf!important;color:#222!important;border-color:#c9bd97!important}
+body.light .rate-sub,body.light #profStats,body.light .csub{color:#666}
+body.light .login-card.gold{background:rgba(255,255,255,.82)!important}
+body.light .gtitle{color:#0090c8}
+body.light .gsub,body.light .gswap,body.light .grow,body.light .gcheck,body.light .gdiv{color:#666}
+body.light .glabel{color:#444}
+body.light .gfield{background:rgba(0,0,0,.05);border-color:#c9bd97}
+body.light .gfield input{color:#222!important}
+body.light .gfield input::placeholder{color:#999}
+body.light .gfield .gico{color:#888}
+body.light .gsoc{background:#fff!important;color:#333!important;border-color:#c9bd97!important}
+body.light .mswitch{color:#6a5a00}
+body.light .signup{color:#666}
+body.light .flink{color:#666}
+body.light .offtag{color:#007a35}
+body.light .strike{color:#999}
+body.light .stk{color:#007a35}
+body.light .maint-tag{color:#b86a00;border-color:#b86a00}
+body.light .maint-bar{background:rgba(255,248,230,.95)}
+body.light .maint-bar b{color:#111;text-shadow:none}
+body.light .gmaint{background:rgba(255,248,230,.95)}
+body.light .gmaint b{color:#111}
+body.light .pavatar{color:#fff}
+body.light #ordPage,body.light #profPage{background:rgba(240,241,246,.9)}
+body.light #ordPage .ordhead{background:rgba(255,255,255,.95);color:#222}
+body.light #ordPage .ordhead h2{color:#222}
+body.light .profLeft,body.light .profRight{background:#fff;color:#222}
+body.light .minirow{background:#f1e8cf;color:#333}
+body.light .accline{background:#f1e8cf;color:#333}
+body.light .featarrow{color:#8a6a00;text-shadow:none}
+body.light .playov{background:rgba(255,255,255,.6);color:#111;border-color:#8a6a00}
+body.light .card{background:#e9dcc0!important;color:#222}
+body.light .ctitle{color:#8a6a00;text-shadow:none}
+body.light .hero h1{color:#222}
+body.light #heroSub{color:#555}
+body.light .whoami{color:#555}
+body.light .whoami #whoUser{color:#111}
+body.light .whostatus{color:#007a35}
+body.light .urow b{color:#8a6a00}
+body.light .off,body.light .offtag,body.light .stk{color:#007a35}
+body.light .linkbtn{color:#8a6a00}
+body.light .flink{color:#666}
+body.light .signup{color:#666}
+body.light .regbtn{color:#8a6a00}
+body.light .maint-bar span,body.light .gmaint span{color:#b86a00}
+body.light #payTimer{color:#b86a00}
+body.light .devbadge{color:#8a6a00;border-color:#8a6a00}
+body.light .rate-sub,body.light #profStats,body.light .csub{color:#666}
+body.light .drow span:first-child{color:#555}
+body.light .drow span:last-child{color:#111}
+body.light #lowBalNote{color:#c81e3a}
+body.light footer{color:#888}
+body.light .flabel,body.light .fhead{color:#8a6a00;text-shadow:none}
+body.light .stat b{background:linear-gradient(90deg,#8a6a00,#b8860b);-webkit-background-clip:text;background-clip:text;color:transparent}
+body.light .brandline{color:#8a6a00;text-shadow:none}
+body.light .tape-in{color:#8a6a00}
+body.light .gtitle em{color:#b8860b;text-shadow:none}
+body.light .featarrow{color:#b8860b;text-shadow:none}
+body.light .fbtn{color:#6a5a00}
+body.light .sbox{color:#5a4a00}
+body.light .supstrip{color:#5a4a00}
 </style>
 </head>
 <body>
@@ -827,7 +950,7 @@ nav button{border-radius:0!important}
         <label class="glabel">Username</label>
         <div class="gfield"><i class="gico">👤</i><input id="uname" placeholder="Your username"></div>
         <label class="glabel">Password</label>
-        <div class="gfield"><i class="gico">🔒</i><input id="upass" type="password" placeholder="••••••••"><button class="geye" onclick="var i=document.getElementById('upass');i.type=i.type==='password'?'text':'password'">👁</button></div>
+        <div class="gfield"><i class="gico">🔒</i><input id="upass" type="password" placeholder="••••••••"><button class="geye pwt" onclick="var i=document.getElementById('upass');var on=i.type==='password';i.type=on?'text':'password';this.classList.toggle('on',on)" title="Show / hide password"></button></div>
         <div class="grow"><label class="gcheck" style="margin-top:0"><input type="checkbox" id="remMe"> Remember me</label><button class="flink" onclick="forgetPass()">Forgot password?</button></div>
         <button class="gbtn" onclick="remSave();doLogin()">Sign In &nbsp;→</button>
         <div class="gdiv">OR CONTINUE WITH</div>
@@ -875,6 +998,7 @@ nav button{border-radius:0!important}
     </div>
     <div class="links">
       <button id="themeBtn" onclick="openTheme()" title="Theme colours" style="padding:8px 12px">🎨</button>
+      <button class="modeknob" id="modeKnob" title="Drag/scroll = dim • Click = dark/white mode"><i></i></button>
       <button id="navHome" class="active" onclick="goHome(this)">Home</button>
       <button id="navContact" onclick="goContact(this)">Contact</button>
     </div>
@@ -2066,6 +2190,34 @@ function doRegisterGold(){
  }catch(e){}
 }
 function appleLogin(){showToast('🍎 Apple login coming soon — login with Google/ID for now');}
+function paintMode(){try{document.body.classList.toggle('light',localStorage.getItem('vg_light')==='1');}catch(e){}}
+function toggleMode(){try{if(localStorage.getItem('vg_light')==='1')localStorage.removeItem('vg_light');else localStorage.setItem('vg_light','1');}catch(e){}paintMode();}
+function paintDim(){
+ try{
+  let d=0;try{d=parseFloat(localStorage.getItem('vg_dim')||'0')||0;}catch(e){}
+  d=Math.max(0,Math.min(0.8,d));window._vgDim=d;
+  let v=document.getElementById('dimVeil');
+  if(!v){v=document.createElement('div');v.id='dimVeil';document.body.appendChild(v);}
+  v.style.opacity=d;
+  const k=document.getElementById('modeKnob');
+  if(k){const n=k.querySelector('i');if(n)n.style.transform='rotate('+(-135+(d/0.8)*270)+'deg)';}
+  return d;
+ }catch(e){return 0;}
+}
+function setDim(d){try{localStorage.setItem('vg_dim',String(Math.max(0,Math.min(0.8,d))));}catch(e){}paintDim();}
+function knobInit(){
+ try{
+  paintDim();
+  if(window._vgKnobW)return;window._vgKnobW=true;
+  const k=document.getElementById('modeKnob');if(!k)return;
+  let drag=false,moved=false,sy=0,sd=0;
+  k.addEventListener('pointerdown',e=>{try{drag=true;moved=false;sy=e.clientY;sd=window._vgDim||0;try{k.setPointerCapture(e.pointerId);}catch(_){}}catch(_){}});
+  k.addEventListener('pointermove',e=>{try{if(!drag)return;if(Math.abs(e.clientY-sy)>4)moved=true;if(moved)setDim(sd+(sy-e.clientY)*0.004);}catch(_){}});
+  k.addEventListener('pointerup',()=>{try{drag=false;if(!moved)toggleMode();}catch(_){}});
+  k.addEventListener('pointercancel',()=>{drag=false;});
+  k.addEventListener('wheel',e=>{try{e.preventDefault();setDim((window._vgDim||0)+(e.deltaY>0?0.05:-0.05));}catch(_){}},{passive:false});
+ }catch(e){}
+}
 let _vgDeferred=null;
 try{window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();window._vgDeferred=e;try{paintAppBtn();}catch(_){}});}catch(e){}
 function appApk(){try{return getSite().apk||'';}catch(e){return '';}}
@@ -3290,7 +3442,7 @@ function drawUsers(){
   const isNew=x.ts&&(Date.now()-x.ts)<7*24*3600*1000;
   if(uFilter==='new'&&!isNew)return;
   shown++;
-  box.innerHTML+=`<div class="urow"><span><b>${x.u}</b> ${x.role==='admin'?'🛡 Admin':x.role==='reseller'?'🤝 Reseller':'👤 Normal'}${isNew?'<b style="color:#ffd83d"> 🆕 NEW</b>':''} ${x.blocked?'<b style="color:#ff3d81">⛔ BLOCKED</b>':''}<br><span class="off">${x.off||0}% OFF</span> <span style="color:#0f9">₹${(function(){try{return getBal(x.u);}catch(e){return 0;}})().toLocaleString('en-IN')}</span> <span style="color:#778">| pass: ${x.p}${x.email?'<br>✉ '+x.email:''}${x.ts?'<br><span style="color:#778">joined '+new Date(x.ts).toLocaleDateString('en-IN')+'</span>':''}</span></span><span class="ops"><button style="background:#1a2456;color:#fff" onclick="editRole(${i})" title="Change role">🔄</button><button style="background:#1a2456;color:#fff" onclick="openPacc(${i})" title="Free panels">🎛</button><button style="background:#1a2456;color:#fff" onclick="editOff(${i})">Edit %</button><button style="background:#1a2456;color:#fff" onclick="editBal(${i})" title="Wallet">💰</button><button style="background:#1a2456;color:#fff" onclick="editPass(${i})">🔑</button><button style="background:#1a2456;color:#fff" onclick="editEmail(${i})" title="Gmail (Google login link)">📧</button><button style="background:#1a2456;color:#fff" onclick="resetFreeIdx(${i})" title="Reset free-key claim">🎁</button><button style="background:${x.blocked?'#00c853':'#ff9d00'};color:#fff" onclick="toggleBlock(${i})">${x.blocked?'▶ Unblock':'⏸ Block'}</button><button style="background:#ff3d81;color:#fff" onclick="delUser(${i})">✖</button></span></div>`;
+  box.innerHTML+=`<div class="urow"><span><b>${x.u}</b> ${x.role==='admin'?'🛡 Admin':x.role==='reseller'?'🤝 Reseller':'👤 Normal'}${isNew?'<b style="color:#ffd83d"> 🆕 NEW</b>':''} ${x.blocked?'<b style="color:#ff3d81">⛔ BLOCKED</b>':''} <span style="color:#ffe9a8" title="Free panels">🎛 ${(x.freePanels||[]).length}</span><br><span class="off">${x.off||0}% OFF</span> <span style="color:#0f9">₹${(function(){try{return getBal(x.u);}catch(e){return 0;}})().toLocaleString('en-IN')}</span> <span style="color:#778">| pass: ${x.p}${x.email?'<br>✉ '+x.email:''}${x.ts?'<br><span style="color:#778">joined '+new Date(x.ts).toLocaleDateString('en-IN')+'</span>':''}</span></span><span class="ops"><button style="background:#1a2456;color:#fff" onclick="editRole(${i})" title="Change role">🔄</button><button style="background:#1a2456;color:#fff" onclick="openPacc(${i})" title="Free panels">🎛</button><button style="background:#1a2456;color:#fff" onclick="editOff(${i})">Edit %</button><button style="background:#1a2456;color:#fff" onclick="editBal(${i})" title="Wallet">💰</button><button style="background:#1a2456;color:#fff" onclick="editPass(${i})">🔑</button><button style="background:#1a2456;color:#fff" onclick="editEmail(${i})" title="Gmail (Google login link)">📧</button><button style="background:#1a2456;color:#fff" onclick="resetFreeIdx(${i})" title="Reset free-key claim">🎁</button><button style="background:${x.blocked?'#00c853':'#ff9d00'};color:#fff" onclick="toggleBlock(${i})">${x.blocked?'▶ Unblock':'⏸ Block'}</button><button style="background:#ff3d81;color:#fff" onclick="delUser(${i})">✖</button></span></div>`;
  });
  if(!shown)box.innerHTML+='<p style="color:#9ab;text-align:center">Nobody in this list.</p>';
 }
@@ -4066,6 +4218,7 @@ function assembleFx(el){
  /* tilt off */
 })();
 renderSite();
+try{paintMode();knobInit();}catch(e){}
 try{document.getElementById('uname').value=localStorage.getItem('vg_remember')||'';}catch(e){}
 observeReveals();
 /* storage health badge — shows instantly whether save will work */
